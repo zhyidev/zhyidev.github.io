@@ -1,189 +1,91 @@
 cv:
-  name: Albert Einstein
-  label: Scientist
-  email: einstein@example.com
-  location: Princeton, NJ
+  name: zhyi
+  label: Java 后端 / AI 应用开发
+  email: zhyispace@qq.com
+  location: 广州, 广东
   image: ""
-  summary: A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time
+  summary: 计算机科学与技术本科生，方向为 Java 后端与 AI 应用开发。做过后端整体设计与实现，涵盖交易链路、消息可靠性与 RAG 检索。
 
   social_networks:
-    - network: X
-      username: AlbertEinstein
     - network: GitHub
-      username: example
-    - network: LinkedIn
-      username: example
+      username: zhyidev
 
   address:
-    street: 2712 Broadway St
-    city: San Francisco
-    region: California
-    postalCode: CA 94115
-    countryCode: US
+    city: 广州
+    region: 广东
+    countryCode: CN
 
   sections:
     Education:
-      - institution: University of Zurich
-        location: Zurich, Switzerland
-        url: https://www.uzh.ch/
-        area: Physics
-        studyType: PhD
-        start_date: 1900
-        end_date: 1905
-        score: ""
-        courses: "Theory of Relativity"
+      - institution: 计算机科学与技术
+        location: 广州, 广东
+        studyType: 本科
+        start_date: "2023.09"
+        end_date: "2027.06"
         highlights:
-          - Description 1.
-          - Description 2.
-
-      - institution: Eidgenössische Technische Hochschule
-        location: Zurich, Switzerland
-        area: Physics
-        studyType: Federal teaching diploma
-        start_date: 1896
-        end_date: 1900
-        highlights:
-          - Description 1.
-          - Description 2.
+          - 蓝桥杯 C++ B 组 省级三等奖
+          - 传智杯 Web 开发大赛 全国二等奖
+          - 多次校级奖学金
 
     Experience:
-      - company: Institute for Advanced Study, Princeton University
-        position: Professor of Theoretical Physics
-        location: Princeton University, NJ
-        start_date: 1933
-        end_date: 1955
-        summary: Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.
+      - company: 智云数科（北京）科技股份有限公司
+        position: 后端开发实习生
+        location: 北京 / 远程
+        start_date: "2026.06"
+        end_date: "2026.09"
+        summary: 作为主要后端开发，完成后端整体设计与实现。
         highlights:
-          - Relativity
-          - Description 2.
-
-      - company: California Institute of Technology
-        position: Visiting Professor
-        location: Pasadena, California, US
-        start_date: 1933
-        end_date: 1933
-        highlights:
-          - Description 1.
-          - Description 2.
-
-      - company: Kaiser Wilhelm Institute for Physics
-        position: Director
-        location: Berlin, Germany
-        start_date: 1917
-        end_date: 1933
-
-      - company: Karl-Ferdinand University
-        position: Professor of Theoretical Physics
-        location: Prague, Czechoslovakia
-        start_date: 1911
-        end_date: 1917
-
-      - company: University of Zurich
-        position: Associate Professor of Theoretical Physics
-        location: Zurich, Switzerland
-        start_date: 1909
-        end_date: 1911
-
-    Volunteer:
-      - company: People's Climate March
-        position: Lead Organizer
-        location: Zurich, Switzerland
-        start_date: 2014-04-01
-        end_date: 2015-07-01
-        summary: Lead organizer for the New York City branch of the People's Climate March, the largest climate march in history.
-        highlights:
-          - "Awarded 'Climate Hero' award by Greenpeace for my efforts organizing the march."
-          - "Men of the year 2014 by Time magazine"
-
-    Awards:
-      - title: Nobel Prize in Physics
-        authors:
-          - "Royal Swedish Academy of Sciences"
-        date: 1921-11-01
-        awarder: Royal Swedish Academy of Sciences
-        url: https://www.nobelprize.org/prizes/physics/1921/einstein/biographical/
-        summary: The Nobel Prizes are five separate prizes that, according to Alfred Nobel's will of 1895, are awarded to 'those who, during the preceding year, have conferred the greatest benefit to humankind.'
-
-      - title: Max Planck Medal
-        authors:
-          - "German Physical Society"
-        date: 2029
-        awarder: German Physical Society
-        summary: Awarded for outstanding scientific achievement
-
-    Publications:
-      - title: Zur Elektrodynamik bewegter Körper
-        authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1905-06-30
-        url: https://en.wikisource.org/wiki/Translation:On_the_Electrodynamics_of_Moving_Bodies
-        summary: It concerned an interpretation of the Michelson–Morley experiment and the properties of light and time. Special relativity incorporates the principle that the speed of light is the same for all inertial observers regardless of the state of motion of the source.
-
-      - title: Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt
-        authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1905-03-18
-        url: https://de.wikisource.org/wiki/Über_einen_die_Erzeugung_und_Verwandlung_des_Lichtes_betreffenden_heuristischen_Gesichtspunkt
-        summary: In the second paper, he applied the quantum theory to light to explain the photoelectric effect. In particular, he used the idea of light quanta (photons) to explain experimental results, but stressed the importance of the experimental results. The importance of his work on the photoelectric effect earned him the Nobel Prize in Physics in 1921.
-
-      - title: Die Grundlage der allgemeinen Relativitätstheorie
-        authors:
-          - Albert Einstein
-        publisher: Annalen der Physik
-        releaseDate: 1916-03-20
-        url: https://de.wikisource.org/wiki/Die_Grundlage_der_allgemeinen_Relativitätstheorie
-        summary: The publication of the theory of general relativity made him internationally famous. He was professor of physics at the universities of Zurich (1909–1911) and Prague (1911–1912), before he returned to ETH Zurich (1912–1914).
-
-    Skills:
-      - name: Physics
-        level: Master
-        icon: fa-solid fa-hashtag
-        keywords: "Quantum Mechanics, Quantum Computing, Quantum Information, Quantum Cryptography, Quantum Communication, Quantum Teleportation"
-
-    Languages:
-      - name: German
-        summary: "Native speaker"
-
-      - name: English
-        summary: "Fluent"
-
-    Interests:
-      - name: Physics
-        icon: fa-solid fa-tag
-        keywords: "Quantum Mechanics, Quantum Computing, Quantum Information, Quantum Cryptography, Quantum Communication, Quantum Teleportation"
-
-    Certificates:
-      - name: Machine Learning
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-location-dot
-
-      - name: Quantum Computing
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-tag
-
-      - name: Quantum Information
-        date: 2018-01-01
-        issuer: Stanford University
-        icon: fa-solid fa-envelope
+          - "架构与治理：14 个 Spring Boot 微服务 + 7 个公共库的 Maven 多模块工程，BOM 统一依赖版本，Nacos 注册配置，Gateway 统一路由 / JWT 校验 / 限流 / 链路 ID，14 个服务接入统一响应与错误码契约。"
+          - "交易链路：实现「下单（服务端快照）→ 库存预占 / 确认 / 释放 → 钱包扣款 → 支付回调」闭环；request_id 幂等 + 状态机 CAS + 乐观锁，防重复下单、重复扣款与超卖；30 分钟未支付自动关单释放预占库存，台账对账。"
+          - "消息可靠性：以 Outbox + 消费侧幂等状态机（claim 租约、重试、死信）封装 RocketMQ，解决「业务落库成功、消息发送失败」；订单、钱包、知识库事件可恢复调度。"
+          - "RAG 检索：Tika 解析 → 1200 / 200 重叠分块 → 向量化 → Elasticsearch + pgvector 双路召回 → RRF（1/(60+rank)）融合 → 带文档版本引用的回答（SSE），评估集校验证据覆盖率与拒答。"
+          - "工程质量：46 个 Flyway「仅向前」迁移脚本 + 启动校验；CI 执行 mvn verify、JaCoCo 覆盖率门禁、SBOM 与 Trivy；维护 144 个测试类 / 22 个集成测试，修复 50+ 处缺陷并定位 RocketMQ 消费并发失败根因。"
 
     Projects:
-      - name: Quantum Computing
-        summary: Quantum computing is the use of quantum-mechanical phenomena such as superposition and entanglement to perform computation. Computers that perform quantum computations are known as quantum computers.
+      - name: AI 智慧校园平台
+        summary: 基于 Tool Use 的 AI 助手，6 个只读业务工具，回答强制带引用溯源。传智杯 Web 开发大赛全国二等奖。
         highlights:
-          - Quantum Teleportation
-          - Quantum Cryptography
-        start_date: 2018-01-01
-        end_date: 2018-01-01
+          - JSON Schema 定义工具契约，实现「模型决策 → 工具执行 → 结果回填」多轮循环，最多 3 轮防死循环。
+          - system prompt 固化只读边界并拒绝写操作；回答强制携带 references 引用溯源。
+          - 会话级上下文管理与 12 条滑动窗口裁剪控制 Token；JWT 无状态认证 + Redisson 分布式锁 + 429 限流。
 
-    References:
-      - name: Professor John Doe
-        icon: fa-solid fa-laptop
-        reference: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit.
+    Awards:
+      - title: 传智杯 Web 开发大赛 全国二等奖
+        awarder: 传智杯全国大学生 IT 技能大赛
+        summary: AI 智慧校园平台，负责 AI 助手模块（Tool Use 工具调用与引用溯源）。
 
-      - name: Professor Jane Smith
-        icon: fa-solid fa-thumbtack
-        reference: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum, diam quis convallis euismod, arcu mi ullamcorper lorem, a vestibulum nunc magna at sem. Sed in risus ac felis varius blandit.
+      - title: 蓝桥杯 C++ B 组 省级三等奖
+        awarder: 蓝桥杯全国软件和信息技术专业人才大赛
+
+    Skills:
+      - name: 编程语言
+        level: 熟练
+        icon: fa-solid fa-code
+        keywords: "Java, Python, C++"
+
+      - name: 后端开发
+        level: 熟练
+        icon: fa-solid fa-server
+        keywords: "Spring Boot, Spring Cloud, MyBatis-Plus, Flyway, JWT"
+
+      - name: 数据库 / 中间件
+        level: 熟悉
+        icon: fa-solid fa-database
+        keywords: "MySQL, Redis, RocketMQ, Elasticsearch, PostgreSQL, pgvector"
+
+      - name: AI 应用
+        level: 熟悉
+        icon: fa-solid fa-robot
+        keywords: "LLM Tool Use, RAG, 混合检索, RRF, Prompt Engineering, SSE"
+
+      - name: 工程化
+        level: 熟悉
+        icon: fa-solid fa-screwdriver-wrench
+        keywords: "Linux, Git, Maven, Docker, GitHub Actions, JUnit 5"
+
+    Languages:
+      - name: 中文
+        summary: 母语
+
+      - name: English
+        summary: 可读写技术文档

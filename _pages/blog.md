@@ -1,9 +1,9 @@
 ---
 layout: default
 permalink: /blog/
-title: blog
-nav: true
-nav_order: 1
+title: 笔记
+nav: false # 有第一篇之后再改成 true
+nav_order: 3
 pagination:
   enabled: true
   collection: posts

@@ -1,10 +1,10 @@
 ---
 layout: page
-title: projects
+title: 项目
 permalink: /projects/
-description: A growing collection of your cool projects.
+description: 做过的项目，以及一些设计上的取舍。
 nav: true
-nav_order: 3
+nav_order: 2
 display_categories: [work, fun]
 horizontal: false
 ---
