@@ -3,7 +3,7 @@ layout: profiles
 permalink: /people/
 title: people
 description: members of the lab or group
-nav: false # 演示页面，内容保留，暂不显示在导航
+nav: true
 nav_order: 7
 
 profiles:

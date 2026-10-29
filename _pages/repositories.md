@@ -3,7 +3,7 @@ layout: page
 permalink: /repositories/
 title: repositories
 description: Edit the `_data/repositories.yml` and change the `github_users` and `github_repos` lists to include your own GitHub profile and repositories.
-nav: false # 演示页面，内容保留，暂不显示在导航
+nav: true
 nav_order: 4
 ---
 
