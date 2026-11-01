@@ -222,7 +222,7 @@ kramdown:
       start_line: 1
 
 # Includes & excludes
-include: ["_pages", ".well-known"]
+include: ["_pages", ".well-known", ".nojekyll"]
 exclude:
   - AGENTS.md
   - al-folio-upgrade-report.md
