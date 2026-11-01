@@ -4,3 +4,7 @@
 email: zhyispace@qq.com # your email address
 github_username: zhyidev
 rss_icon: true # comment this line to hide the RSS icon
+custom_social:
+  logo: fa-solid fa-comment-dots
+  title: 讨论
+  url: https://github.com/zhyidev/zhyidev.github.io/discussions
