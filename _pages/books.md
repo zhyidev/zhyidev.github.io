@@ -6,8 +6,8 @@ nav: false
 collection: books
 ---
 
-> What an astonishing thing a book is. It's a flat object made from a tree with flexible parts on which are imprinted lots of funny dark squiggles. But one glance at it and you're inside the mind of another person, maybe somebody dead for thousands of years. Across the millennia, an author is speaking clearly and silently inside your head, directly to you. Writing is perhaps the greatest of human inventions, binding together people who never knew each other, citizens of distant epochs. Books break the shackles of time. A book is proof that humans are capable of working magic.
->
-> -- Carl Sagan, Cosmos, Part 11: The Persistence of Memory (1980)
+> 书是少数能让人跨过时间的发明：一个死去很久的人，把话说完，你在这里听见。
 
-## Books that I am reading, have read, or will read
+## 读过、在读、待读
+
+暂时空着，等读到值得记的再补。

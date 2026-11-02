@@ -4,7 +4,15 @@
 email: zhyispace@qq.com # your email address
 github_username: zhyidev
 rss_icon: true # comment this line to hide the RSS icon
+<<<<<<< HEAD
 custom_social:
   logo: fa-solid fa-comment-dots
   title: 讨论
   url: https://github.com/zhyidev/zhyidev.github.io/discussions
+=======
+discussion:
+  logo: fa-solid fa-comment-dots
+  title: 讨论
+  url: https://github.com/zhyidev/zhyidev.github.io/discussions
+
+>>>>>>> 3ef7d65 (content: replace al-folio demo content with own notes, projects and links)

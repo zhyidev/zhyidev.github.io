@@ -2,7 +2,7 @@
 layout: page
 title: 本站
 description: al-folio + GitHub Pages。简历、项目与写作放在同一个仓库里。
-importance: 3
+importance: 4
 category: fun
 ---
 

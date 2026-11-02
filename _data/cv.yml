@@ -31,8 +31,8 @@ cv:
       - company: 智云数科（北京）科技股份有限公司
         position: 后端开发实习生
         location: 北京 / 远程
-        start_date: "2026.06"
-        end_date: "2026.09"
+        start_date: "2026.07"
+        end_date: "2026.08"
         summary: 作为主要后端开发，完成后端整体设计与实现。
         highlights:
           - "架构与治理：14 个 Spring Boot 微服务 + 7 个公共库的 Maven 多模块工程，BOM 统一依赖版本，Nacos 注册配置，Gateway 统一路由 / JWT 校验 / 限流 / 链路 ID，14 个服务接入统一响应与错误码契约。"
@@ -48,6 +48,13 @@ cv:
           - JSON Schema 定义工具契约，实现「模型决策 → 工具执行 → 结果回填」多轮循环，最多 3 轮防死循环。
           - system prompt 固化只读边界并拒绝写操作；回答强制携带 references 引用溯源。
           - 会话级上下文管理与 12 条滑动窗口裁剪控制 Token；JWT 无状态认证 + Redisson 分布式锁 + 429 限流。
+
+      - name: 企业级 RAG 智能问答与 Agent 工具调用平台
+        summary: 可配置节点的 IngestionEngine + 四通道召回 + RRF 融合与重排，7 个 Maven 模块的模块化单体。
+        highlights:
+          - 设计可配置节点 IngestionEngine：解析 → 分块 → 向量化 → 写入 pgvector，支持条件跳过与节点级日志，失败可精确定位。
+          - 向量 / 关键词 / 图谱 / 联网四通道并行召回，RRF 融合 + Rerank 重排，检索漏斗每路 20 → 融合 40 → 重排 10，回答带来源引用可溯源。
+          - 模型路由层三态熔断 + 失败自动切换，换模型不改核心问答流程。
 
     Awards:
       - title: 传智杯 Web 开发大赛 全国二等奖

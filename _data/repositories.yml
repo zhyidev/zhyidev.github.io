@@ -1,14 +1,11 @@
 github_users:
-  - torvalds
-  - alshedivat
+  - zhyidev
 
 repo_description_lines_max: 2
 
 github_repos:
-  - alshedivat/al-folio
-  - jekyll/jekyll
-  - twbs/bootstrap
-  - jquery/jquery
-  - FortAwesome/Font-Awesome
-  - mathjax/MathJax
-  - jpswalsh/academicons
+  - zhyidev/yuegang-zhihui-ai
+  - zhyidev/zhyidev.github.io
+  # fork 的项目，需要的话取消注释
+  # - zhyidev/rea-fork
+  # - zhyidev/source-j-legado

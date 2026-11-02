@@ -1,5 +1,5 @@
-Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](https://www.reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
+计算机科学与技术专业 2023 级本科生，方向是 Java 后端与 AI 应用开发。
 
-Put your address / P.O. box / other info right below your picture. You can also disable any these elements by editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and Jekyll will render your [publications page](/al-folio/publications/) automatically.
+做过一条完整的交易链路：下单、库存预占、钱包扣款、支付回调，配上一套 Outbox + 消费侧幂等状态机；也做过 RAG 的召回链路：双路召回、RRF 融合、Rerank 重排、带版本引用的回答。
 
-Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them.
+比起把功能跑通，更在意为什么这么设计。写下来的原因都放在[笔记](/blog/)里。
