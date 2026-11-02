@@ -8,17 +8,17 @@ Java 后端 / AI 应用开发方向的个人站点：首页简介、简历、项
 
 静态站点，Jekyll 构建，跑在 al-folio 提供的 `al_folio_core` 主题上。**仓库里只有内容，没有布局**——`_layouts`、`_includes`、`_sass`、`assets/css|js` 都在主题 gem 里，所以改样式要去改主题，改内容只动下面这些目录：
 
-| 路径 | 放什么 |
-|---|---|
-| `_config.yml` | 站点名、描述、URL、导航与功能开关 |
-| `_pages/about.md` | 首页正文 |
-| `_data/cv.yml` | `/cv/` 简历页的数据 |
-| `_data/socials.yml` | 邮箱、GitHub 等社交链接 |
-| `_projects/` | 项目卡片，一个文件一个项目 |
-| `_posts/` | 笔记，文件名 `YYYY-MM-DD-title.md` |
-| `_news/` | 首页「动态」时间线条目 |
-| `_bibliography/papers.bib` | 论文条目（暂时为空） |
-| `assets/img/` | 图片，头像为 `prof_pic.jpg` |
+| 路径                       | 放什么                             |
+| -------------------------- | ---------------------------------- |
+| `_config.yml`              | 站点名、描述、URL、导航与功能开关  |
+| `_pages/about.md`          | 首页正文                           |
+| `_data/cv.yml`             | `/cv/` 简历页的数据                |
+| `_data/socials.yml`        | 邮箱、GitHub 等社交链接            |
+| `_projects/`               | 项目卡片，一个文件一个项目         |
+| `_posts/`                  | 笔记，文件名 `YYYY-MM-DD-title.md` |
+| `_news/`                   | 首页「动态」时间线条目             |
+| `_bibliography/papers.bib` | 论文条目（暂时为空）               |
+| `assets/img/`              | 图片，头像为 `prof_pic.jpg`        |
 
 ### 加论文条目
 
