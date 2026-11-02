@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://zhyidev.github.io/sitemap.xml
+Sitemap: https://www.10010506.xyz/sitemap.xml
