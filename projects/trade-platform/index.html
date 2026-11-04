@@ -106,7 +106,29 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/blog/";
               },
-            },{id: "post-rag-双路召回与-rrf-融合-为什么是-1-60-rank",
+            },{id: "post-单测全绿-功能全废-一次-集成测试反攻-的复盘",
+        
+          title: "单测全绿，功能全废：一次「集成测试反攻」的复盘",
+        
+        description: "两天 35 个提交、占整个仓库 31%，全在修同一类 bug：SQL 里的表名列名拼错。它们能编译、能启动、单测全绿，却在真实数据库前全线崩溃。这篇复盘缺陷类型学，以及为什么「mock 掉被测对象」是最危险的一种测试。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/testcontainers-postmortem/";
+          
+        },
+      },{id: "post-两个我最终没用的技术-seata-与-es-官方客户端",
+        
+          title: "两个我最终没用的技术：Seata 与 ES 官方客户端",
+        
+        description: "技术选型里最难的不是「选什么」，是「敢不选什么」。这篇讲三个被我主动砍掉的方案：Seata、Elasticsearch 官方客户端、Redis 预扣库存，以及每个「减法」换来了什么、又付出了什么。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/three-tech-decisions-i-skipped/";
+          
+        },
+      },{id: "post-rag-双路召回与-rrf-融合-为什么是-1-60-rank",
         
           title: "RAG 双路召回与 RRF 融合：为什么是 1/(60+rank)",
         
