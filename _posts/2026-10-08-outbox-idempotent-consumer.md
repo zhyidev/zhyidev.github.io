@@ -6,6 +6,8 @@ description: 事务提交了但消息没发出去，下游永远等不到。用�
 tags: [后端, 消息队列, 可靠性]
 categories: [后端]
 related_posts: false
+toc:
+  sidebar: left
 ---
 
 有个 bug 反复出现又很难复现：订单落库成功了，钱包没扣款；或者钱包扣了，库存没释放。查日志发现业务事务提交了，但 MQ 的发送失败了。

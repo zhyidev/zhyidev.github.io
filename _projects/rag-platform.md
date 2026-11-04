@@ -4,6 +4,8 @@ title: 企业级 RAG 平台
 description: 可配置节点的 IngestionEngine + 四通道召回 + RRF 融合与重排，7 个 Maven 模块的模块化单体。
 importance: 3
 category: work
+toc:
+  beginning: true
 ---
 
 Spring Boot 4 / Maven 多模块 / MyBatis / PostgreSQL + pgvector / Redis / LangChain4j。

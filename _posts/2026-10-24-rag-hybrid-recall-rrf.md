@@ -7,6 +7,8 @@ tags: [RAG, 检索, 后端]
 categories: [后端]
 featured: true
 related_posts: false
+toc:
+  sidebar: left
 ---
 
 RAG 项目里最难调的不是模型，是**召回**。模型再好，检索回来的段落不相关，回答一定是编的。

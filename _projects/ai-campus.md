@@ -4,6 +4,8 @@ title: AI 智慧校园平台
 description: 基于 Tool Use 的 AI 助手，6 个只读业务工具，回答强制带引用溯源。
 importance: 2
 category: work
+toc:
+  beginning: true
 ---
 
 传智杯 Web 开发大赛全国二等奖项目，负责 AI 助手模块。

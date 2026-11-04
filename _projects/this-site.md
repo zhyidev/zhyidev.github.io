@@ -4,6 +4,8 @@ title: 本站
 description: al-folio + GitHub Pages。简历、项目与写作放在同一个仓库里。
 importance: 4
 category: fun
+toc:
+  beginning: true
 ---
 
 用 [al-folio](https://github.com/alshedivat/al-folio) 搭的个人主页，Jekyll 构建、GitHub Actions 发布到 GitHub Pages。

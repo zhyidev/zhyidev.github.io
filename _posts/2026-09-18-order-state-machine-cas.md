@@ -7,6 +7,8 @@ tags: [后端, 交易, 并发]
 categories: [后端]
 featured: true
 related_posts: false
+toc:
+  sidebar: left
 ---
 
 交易链路最容易出事的地方不是「功能没写完」，而是同一件事被做了两次：同一个 `request_id` 提交了两遍、支付回调重发了三次、关单任务和用户支付撞在一起。这些都不是功能问题，是并发和幂等的问题。
