@@ -1,0 +1,66 @@
+---
+layout: default
+---
+{% if page._styles %}
+  <!-- Page/Post style -->
+  <style type="text/css">
+    {{ page._styles }}
+  </style>
+{% endif %}
+
+{% assign toc_side = page.toc.sticky %}
+{% if toc_side %}
+  <style>
+    @media (min-width: 1400px) {
+      #toc-sidebar.toc-floating {
+        position: fixed;
+        top: 5rem;
+        width: 200px;
+        max-height: calc(100vh - 7rem);
+        overflow-y: auto;
+        padding-right: 0.4rem;
+      }
+      #toc-sidebar.toc-floating-left  { left: max(1rem, calc(50% - 685px)); }
+      #toc-sidebar.toc-floating-right { right: max(1rem, calc(50% - 685px)); }
+      #toc-sidebar.toc-floating .toc-link { font-size: 0.8rem; line-height: 1.4; }
+    }
+    @media (max-width: 1399.98px) {
+      #toc-sidebar.toc-floating { display: none; }
+    }
+  </style>
+  <nav
+    id="toc-sidebar"
+    class="toc toc-sidebar toc-floating toc-floating-{{ toc_side }}"
+    aria-label="Table of contents"
+    data-toc-collapse="{{ page.toc.collapse | default: 'expanded' }}"
+    data-toc-collapse-depth="{{ page.toc.collapse_depth | default: '' }}"
+  ></nav>
+{% endif %}
+
+<div class="post">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+    <p class="post-description">{{ page.description }}</p>
+  </header>
+
+  <article>
+    {% if page.toc and page.toc.beginning %}
+      <div id="table-of-contents">
+        {% toc %}
+      </div>
+      <hr>
+    {% endif %}
+    {{ content }}
+  </article>
+
+  {% if page.related_publications %}
+    <h2>References</h2>
+    <div class="publications">
+      {% bibliography --cited_in_order %}
+    </div>
+  {% endif %}
+
+  {% if site.plugins contains 'al_comments' %}
+    {% include plugins/al_comments.liquid %}
+  {% endif %}
+</div>
