@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 402" width="100%" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" role="img">
+<title>没有分布式事务，一致性从哪来：四层机制 + 一条对账旁路</title>
+<rect x="0.5" y="0.5" width="899" height="401" rx="10" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="28" y="34" font-size="15" font-weight="700" fill="#156b4a">没有分布式事务，一致性从哪来：四层机制 + 一条对账旁路</text>
+<rect x="28" y="86" width="178" height="96" rx="9" fill="#eaf4ee" stroke="#dfe5e1"/>
+<text x="41" y="112" font-size="12.5" font-weight="700" fill="#156b4a">① 本地事务</text>
+<text x="41" y="132" font-size="11.2" fill="#5f6f66">业务表 + outbox 表</text>
+<text x="41" y="149" font-size="11.2" fill="#5f6f66">同一事务提交</text>
+<rect x="250" y="86" width="178" height="96" rx="9" fill="#e9f1f7" stroke="#dfe5e1"/>
+<text x="263" y="112" font-size="12.5" font-weight="700" fill="#2f5e83">② 至少一次投递</text>
+<text x="263" y="132" font-size="11.2" fill="#5f6f66">独立任务扫表发送</text>
+<text x="263" y="149" font-size="11.2" fill="#5f6f66">租约 / 重试 / 死信</text>
+<rect x="472" y="86" width="178" height="96" rx="9" fill="#fbf2e2" stroke="#dfe5e1"/>
+<text x="485" y="112" font-size="12.5" font-weight="700" fill="#8a5a12">③ 消费幂等</text>
+<text x="485" y="132" font-size="11.2" fill="#5f6f66">INSERT IGNORE inbox</text>
+<text x="485" y="149" font-size="11.2" fill="#5f6f66">重复投递直接返回</text>
+<rect x="694" y="86" width="178" height="96" rx="9" fill="#eaf4ee" stroke="#dfe5e1"/>
+<text x="707" y="112" font-size="12.5" font-weight="700" fill="#156b4a">④ 状态机 CAS</text>
+<text x="707" y="132" font-size="11.2" fill="#5f6f66">WHERE 版本号 + 状态</text>
+<text x="707" y="149" font-size="11.2" fill="#5f6f66">冲突即失败不重试</text>
+<path d="M206 134 L246 134" stroke="#5f6f66" stroke-width="1.6" marker-end="url(#ar2)"/>
+<path d="M428 134 L468 134" stroke="#5f6f66" stroke-width="1.6" marker-end="url(#ar2)"/>
+<path d="M650 134 L690 134" stroke="#5f6f66" stroke-width="1.6" marker-end="url(#ar2)"/>
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5f6f66"/></marker></defs>
+<rect x="28" y="222" width="844" height="92" rx="9" fill="#fbeceb" stroke="#a83a34" stroke-dasharray="6 4"/>
+<text x="46" y="248" font-size="12.5" font-weight="700" fill="#a83a34">旁路：对账兜底（不依赖 MQ）</text>
+<text x="46" y="270" font-size="11.5" fill="#5f6f66">订单侧直接向钱包查询支付结果并校验金额 / 币种 / 用户，事件链路整体失效时仍能把订单收敛到「已支付」。</text>
+<text x="46" y="291" font-size="11.5" fill="#5f6f66">另有 POST /api/v1/admin/orders/reconciliation 做订单 ↔ 钱包 ↔ 库存三方对账（按需触发，非定时）。</text>
+<rect x="28" y="330" width="844" height="52" rx="9" fill="#f7f9f8" stroke="#dfe5e1"/>
+<text x="46" y="352" font-size="12.5" font-weight="700" fill="#156b4a">补偿：跨服务写失败即逆序释放</text>
+<text x="46" y="371" font-size="11.5" fill="#5f6f66">先占库存再落单，落单失败逐条 release；release 自身异常由库存服务 30 分钟过期任务回收。</text>
+</svg>

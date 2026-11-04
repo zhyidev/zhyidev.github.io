@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="100%" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" role="img">
+<title>交易中台后端 · 封面</title>
+<rect x="0.5" y="0.5" width="1199" height="629" rx="10" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="28" y="34" font-size="15" font-weight="700" fill="#156b4a">交易中台后端 · 封面</text>
+<text x="72" y="132" font-size="13" letter-spacing="3" fill="#5f6f66">PORTFOLIO · BACKEND</text>
+<text x="72" y="216" font-size="52" font-weight="700" fill="#12352a">交易中台后端</text>
+<text x="72" y="264" font-size="19" fill="#5f6f66">一个人 · 3.7 个月 · 112 个提交</text>
+<text x="72" y="298" font-size="19" fill="#5f6f66">下单 → 占库存 → 扣款 → 回调，任意一环挂掉都不超卖、不重复扣款</text>
+<rect x="72" y="352" width="236" height="104" rx="10" fill="#eaf4ee" stroke="#dfe5e1"/>
+<text x="94" y="404" font-size="34" font-weight="700" fill="#156b4a">14</text>
+<text x="94" y="430" font-size="14" fill="#5f6f66">个微服务</text>
+<rect x="326" y="352" width="236" height="104" rx="10" fill="#eaf4ee" stroke="#dfe5e1"/>
+<text x="348" y="404" font-size="34" font-weight="700" fill="#156b4a">7</text>
+<text x="348" y="430" font-size="14" fill="#5f6f66">个公共库</text>
+<rect x="580" y="352" width="236" height="104" rx="10" fill="#eaf4ee" stroke="#dfe5e1"/>
+<text x="602" y="404" font-size="34" font-weight="700" fill="#156b4a">21,173</text>
+<text x="602" y="430" font-size="14" fill="#5f6f66">行有效代码</text>
+<rect x="834" y="352" width="236" height="104" rx="10" fill="#eaf4ee" stroke="#dfe5e1"/>
+<text x="856" y="404" font-size="34" font-weight="700" fill="#156b4a">22</text>
+<text x="856" y="430" font-size="14" fill="#5f6f66">个集成测试</text>
+<rect x="72.0" y="512" width="190.4" height="34" rx="8" fill="#ffffff" stroke="#156b4a"/>
+<text x="167.2" y="534" font-size="13" fill="#156b4a" text-anchor="middle">网关验签</text>
+<text x="275.4" y="534" font-size="13" fill="#5f6f66" text-anchor="middle">→</text>
+<rect x="288.4" y="512" width="190.4" height="34" rx="8" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="383.6" y="534" font-size="13" fill="#243029" text-anchor="middle">服务端取价</text>
+<text x="491.8" y="534" font-size="13" fill="#5f6f66" text-anchor="middle">→</text>
+<rect x="504.8" y="512" width="190.4" height="34" rx="8" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="600.0" y="534" font-size="13" fill="#243029" text-anchor="middle">预占库存</text>
+<text x="708.2" y="534" font-size="13" fill="#5f6f66" text-anchor="middle">→</text>
+<rect x="721.2" y="512" width="190.4" height="34" rx="8" fill="#ffffff" stroke="#156b4a"/>
+<text x="816.4" y="534" font-size="13" fill="#156b4a" text-anchor="middle">落单 + Outbox</text>
+<text x="924.6" y="534" font-size="13" fill="#5f6f66" text-anchor="middle">→</text>
+<rect x="937.6" y="512" width="190.4" height="34" rx="8" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="1032.8" y="534" font-size="13" fill="#243029" text-anchor="middle">扣款 + 回调</text>
+<text x="72" y="592" font-size="13" fill="#5f6f66">Java 25 · Spring Boot 4.0.7 · Spring Cloud 2025.1.2 · MySQL / pgvector / ES / Redis / RocketMQ</text>
+</svg>

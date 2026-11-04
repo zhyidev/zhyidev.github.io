@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 562" width="100%" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" role="img">
+<title>粤港甄选 · 分层架构（依赖方向单向，零违规）</title>
+<rect x="0.5" y="0.5" width="899" height="561" rx="10" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="28" y="34" font-size="15" font-weight="700" fill="#156b4a">粤港甄选 · 分层架构（依赖方向单向，零违规）</text>
+<rect x="28" y="74" width="844" height="112" rx="9" fill="#eaf4ee" stroke="#dfe5e1"/>
+<rect x="28" y="74" width="4" height="112" rx="2" fill="#156b4a"/>
+<text x="48" y="98" font-size="14" font-weight="700" fill="#156b4a">接入层</text>
+<text x="48" y="115" font-size="11.5" fill="#5f6f66">gateway</text>
+<rect x="190" y="82" width="202" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="201.0" y="96" font-size="11.5" fill="#243029">GatewaySecurityConfiguration</text>
+<rect x="400" y="82" width="189" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="411.3" y="96" font-size="11.5" fill="#243029">JwtSessionValidationFilter</text>
+<rect x="597" y="82" width="176" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="608.8" y="96" font-size="11.5" fill="#243029">TrustedUserContextFilter</text>
+<rect x="190" y="108" width="182" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="201.0" y="122" font-size="11.5" fill="#243029">GatewayRequestGuardFilter</text>
+<text x="190" y="174" font-size="11.5" fill="#5f6f66">唯一公网入口：验签 / 会话黑名单 / 限流 / 注入签名身份头</text>
+<rect x="28" y="196" width="844" height="86" rx="9" fill="#eaf4ee" stroke="#dfe5e1"/>
+<rect x="28" y="196" width="4" height="86" rx="2" fill="#156b4a"/>
+<text x="48" y="220" font-size="14" font-weight="700" fill="#156b4a">平台层</text>
+<text x="48" y="237" font-size="11.5" fill="#5f6f66">auth-service</text>
+<rect x="190" y="204" width="150" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="201.0" y="218" font-size="11.5" fill="#243029">Argon2PasswordHasher</text>
+<rect x="348" y="204" width="182" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="359.8" y="218" font-size="11.5" fill="#243029">OpaqueRefreshTokenService</text>
+<rect x="539" y="204" width="157" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="550.8" y="218" font-size="11.5" fill="#243029">RedisLoginRateLimiter</text>
+<rect x="705" y="204" width="131" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="716.0" y="218" font-size="11.5" fill="#243029">RsaSigningKeyRing</text>
+<text x="190" y="270" font-size="11.5" fill="#5f6f66">认证与授权：Argon2id / 令牌签发 / 刷新轮转 / 登录限流（95 文件，全仓最大模块）</text>
+<rect x="28" y="292" width="844" height="112" rx="9" fill="#fbf2e2" stroke="#dfe5e1"/>
+<rect x="28" y="292" width="4" height="112" rx="2" fill="#8a5a12"/>
+<text x="48" y="316" font-size="14" font-weight="700" fill="#8a5a12">应用层</text>
+<text x="48" y="333" font-size="11.5" fill="#5f6f66">12 个业务服务</text>
+<rect x="190" y="300" width="47" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="201.0" y="314" font-size="11.5" fill="#243029">user</text>
+<rect x="245" y="300" width="67" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="256.8" y="314" font-size="11.5" fill="#243029">product</text>
+<rect x="320" y="300" width="79" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="331.8" y="314" font-size="11.5" fill="#243029">inventory</text>
+<rect x="408" y="300" width="54" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="419.8" y="314" font-size="11.5" fill="#243029">order</text>
+<rect x="470" y="300" width="60" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="482.0" y="314" font-size="11.5" fill="#243029">wallet</text>
+<rect x="539" y="300" width="79" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="550.6" y="314" font-size="11.5" fill="#243029">knowledge</text>
+<rect x="627" y="300" width="60" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="638.6" y="314" font-size="11.5" fill="#243029">search</text>
+<rect x="696" y="300" width="34" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="707.2" y="314" font-size="11.5" fill="#243029">ai</text>
+<rect x="739" y="300" width="73" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="750.1" y="314" font-size="11.5" fill="#243029">training</text>
+<rect x="190" y="326" width="60" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="201.0" y="340" font-size="11.5" fill="#243029">system</text>
+<rect x="258" y="326" width="99" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="269.6" y="340" font-size="11.5" fill="#243029">notification</text>
+<rect x="365" y="326" width="54" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="376.9" y="340" font-size="11.5" fill="#243029">admin</text>
+<text x="190" y="392" font-size="11.5" fill="#5f6f66">每组强制拆 -api / -service 双模块；服务之间只依赖对方的 -api</text>
+<rect x="28" y="414" width="844" height="86" rx="9" fill="#e9f1f7" stroke="#dfe5e1"/>
+<rect x="28" y="414" width="4" height="86" rx="2" fill="#2f5e83"/>
+<text x="48" y="438" font-size="14" font-weight="700" fill="#2f5e83">基础层</text>
+<text x="48" y="455" font-size="11.5" fill="#5f6f66">common × 7</text>
+<rect x="190" y="422" width="47" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="201.0" y="436" font-size="11.5" fill="#243029">core</text>
+<rect x="245" y="422" width="41" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="256.8" y="436" font-size="11.5" fill="#243029">web</text>
+<rect x="295" y="422" width="73" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="306.1" y="436" font-size="11.5" fill="#243029">security</text>
+<rect x="376" y="422" width="54" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="387.6" y="436" font-size="11.5" fill="#243029">redis</text>
+<rect x="438" y="422" width="67" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="449.8" y="436" font-size="11.5" fill="#243029">mybatis</text>
+<rect x="513" y="422" width="34" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="524.9" y="436" font-size="11.5" fill="#243029">mq</text>
+<rect x="556" y="422" width="47" height="20" rx="5" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="567.8" y="436" font-size="11.5" fill="#243029">test</text>
+<text x="190" y="488" font-size="11.5" fill="#5f6f66">只允许依赖 common-core；靠 AutoConfiguration.imports 被装配（143 文件 / 9,062 行）</text>
+<text x="28" y="540" font-size="11.5" fill="#5f6f66">依赖方向：接入 → 平台 → 应用 → 基础，基础层不得反向引用；59 个 pom 逐一核验，违规 0 处。</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 510" width="100%" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" role="img">
+<title>下单到支付回调：五个环节，每环都有一个「为什么不能那样写」</title>
+<rect x="0.5" y="0.5" width="899" height="509" rx="10" fill="#ffffff" stroke="#dfe5e1"/>
+<text x="28" y="34" font-size="15" font-weight="700" fill="#156b4a">下单到支付回调：五个环节，每环都有一个「为什么不能那样写」</text>
+<rect x="28" y="72" width="844" height="66" rx="9" fill="#fcfdfc" stroke="#dfe5e1"/>
+<rect x="40" y="85" width="40" height="40" rx="9" fill="#156b4a"/>
+<text x="60" y="110" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">01</text>
+<text x="96" y="98" font-size="13.5" font-weight="700" fill="#243029">网关验签与会话校验</text>
+<text x="96" y="117" font-size="11.8" fill="#5f6f66">RS256 验签 → 查 Redis 黑名单 → 注入 HMAC 签名的用户上下文头</text>
+<rect x="796" y="94" width="63" height="20" rx="5" fill="#e9f1f7" stroke="#dfe5e1"/>
+<text x="806" y="108" font-size="11" fill="#2f5e83">gateway</text>
+<path d="M60 130 L60 146" stroke="#156b4a" stroke-width="1.4" marker-end="url(#ar)" opacity="0.5"/>
+<rect x="28" y="150" width="844" height="66" rx="9" fill="#fcfdfc" stroke="#dfe5e1"/>
+<rect x="40" y="163" width="40" height="40" rx="9" fill="#156b4a"/>
+<text x="60" y="188" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">02</text>
+<text x="96" y="176" font-size="13.5" font-weight="700" fill="#243029">服务端重新取价</text>
+<text x="96" y="195" font-size="11.8" fill="#5f6f66">只收 skuId + quantity；价格、名称、编码从商品服务重读并校验已上架</text>
+<rect x="747" y="172" width="112" height="20" rx="5" fill="#e9f1f7" stroke="#dfe5e1"/>
+<text x="757" y="186" font-size="11" fill="#2f5e83">CheckoutService</text>
+<path d="M60 208 L60 224" stroke="#156b4a" stroke-width="1.4" marker-end="url(#ar)" opacity="0.5"/>
+<rect x="28" y="228" width="844" height="66" rx="9" fill="#fcfdfc" stroke="#dfe5e1"/>
+<rect x="40" y="241" width="40" height="40" rx="9" fill="#8a5a12"/>
+<text x="60" y="266" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">03</text>
+<text x="96" y="254" font-size="13.5" font-weight="700" fill="#243029">条件更新预占库存</text>
+<text x="96" y="273" font-size="11.8" fill="#5f6f66">UPDATE ... WHERE available &gt;= ? —— 判断与修改在同一条语句，无先查后改窗口</text>
+<rect x="741" y="250" width="118" height="20" rx="5" fill="#e9f1f7" stroke="#dfe5e1"/>
+<text x="751" y="264" font-size="11" fill="#2f5e83">InventoryService</text>
+<path d="M60 286 L60 302" stroke="#8a5a12" stroke-width="1.4" marker-end="url(#ar)" opacity="0.5"/>
+<rect x="28" y="306" width="844" height="66" rx="9" fill="#fcfdfc" stroke="#dfe5e1"/>
+<rect x="40" y="319" width="40" height="40" rx="9" fill="#156b4a"/>
+<text x="60" y="344" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">04</text>
+<text x="96" y="332" font-size="13.5" font-weight="700" fill="#243029">单事务落单 + 写 Outbox</text>
+<text x="96" y="351" font-size="11.8" fill="#5f6f66">订单主表 / 明细 / 地址快照 / 状态历史 / outbox 六写一事务；失败逐条释放预占</text>
+<rect x="766" y="328" width="93" height="20" rx="5" fill="#e9f1f7" stroke="#dfe5e1"/>
+<text x="776" y="342" font-size="11" fill="#2f5e83">OrderService</text>
+<path d="M60 364 L60 380" stroke="#156b4a" stroke-width="1.4" marker-end="url(#ar)" opacity="0.5"/>
+<rect x="28" y="384" width="844" height="66" rx="9" fill="#fcfdfc" stroke="#dfe5e1"/>
+<rect x="40" y="397" width="40" height="40" rx="9" fill="#2f5e83"/>
+<text x="60" y="422" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">05</text>
+<text x="96" y="410" font-size="13.5" font-weight="700" fill="#243029">扣款 → 事件回写 → 转实销</text>
+<text x="96" y="429" font-size="11.8" fill="#5f6f66">三段幂等 → Outbox → MQ → inbox 幂等 → 状态机 CAS → 库存 LOCKED→SOLD</text>
+<rect x="759" y="406" width="100" height="20" rx="5" fill="#e9f1f7" stroke="#dfe5e1"/>
+<text x="769" y="420" font-size="11" fill="#2f5e83">WalletService</text>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5f6f66"/></marker></defs>
+<text x="28" y="490" font-size="11.5" fill="#5f6f66">幂等的最终担保不在 Java 里，而在 order_main 的 UNIQUE KEY uk_order_user_request (user_id, request_id)。</text>
+</svg>
