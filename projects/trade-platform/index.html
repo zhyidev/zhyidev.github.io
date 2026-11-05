@@ -14,12 +14,21 @@
         overflow-y: auto;
         padding-right: 0.4rem;
       }
-      #toc-sidebar.toc-floating-left  { left: max(1rem, calc(50% - 685px)); }
-      #toc-sidebar.toc-floating-right { right: max(1rem, calc(50% - 685px)); }
-      #toc-sidebar.toc-floating .toc-link { font-size: 0.8rem; line-height: 1.4; }
+      #toc-sidebar.toc-floating-left {
+        left: max(1rem, calc(50% - 685px));
+      }
+      #toc-sidebar.toc-floating-right {
+        right: max(1rem, calc(50% - 685px));
+      }
+      #toc-sidebar.toc-floating .toc-link {
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
     }
     @media (max-width: 1399.98px) {
-      #toc-sidebar.toc-floating { display: none; }
+      #toc-sidebar.toc-floating {
+        display: none;
+      }
     }
   </style> <nav id="toc-sidebar" class="toc toc-sidebar toc-floating toc-floating-left" aria-label="Table of contents" data-toc-collapse="expanded" data-toc-collapse-depth=""></nav> <div class="post"> <header class="post-header"> <h1 class="post-title">交易中台后端</h1> <p class="post-description">把「下单 → 占库存 → 扣款 → 回调」做成不会超卖、不会重复扣款、状态可复盘的系统。14 个 Spring Boot 微服务 + 7 个公共库。</p> </header> <article> <blockquote> <p>把一条交易链路做成在任意一环挂掉时都不会超卖、不会重复扣款、状态可复盘的系统。</p> </blockquote> <p><strong>规模</strong>：14 个 Spring Boot 微服务 · 7 个公共库 · 702 个 Java 文件（主代码 558 个 / 21,173 行有效代码）· 144 个测试文件（含 22 个集成测试）· 51 个 Flyway 迁移脚本。</p> <hr> <h3 id="01--我最想讲的一个决策状态机-cas而不是悲观锁">01 · 我最想讲的一个决策：状态机 CAS，而不是悲观锁</h3> <p>下单要防重复提交、防并发改状态。最直觉的做法是 <code class="language-plaintext highlighter-rouge">SELECT ... FOR UPDATE</code> 加锁，我没这么做。</p> <p>理由有两条：下单是短事务、冲突概率低；悲观锁会让长尾请求排队。而真正会冲突的只有「同一订单被重复操作」这一种情况——<strong>这种冲突，失败才是正确语义</strong>（用户连点两次取消，第二次不该成功）。</p> <p>所以我把判断塞进 <code class="language-plaintext highlighter-rouge">WHERE</code>，用影响行数定成败：</p> <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">UPDATE</span> <span class="n">order_main</span>
    <span class="k">SET</span> <span class="n">status</span> <span class="o">=</span> <span class="o">?</span><span class="p">,</span> <span class="k">version</span> <span class="o">=</span> <span class="k">version</span> <span class="o">+</span> <span class="mi">1</span>
