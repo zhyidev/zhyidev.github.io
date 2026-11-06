@@ -8,3 +8,15 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
+
+  # Keep local formatting in sync with .github/workflows/prettier.yml,
+  # so a push never fails the Prettier check 20 seconds later.
+  # Uses the repo's own devDependency instead of a pinned mirror, avoiding
+  # version drift between this hook and the version installed in CI.
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        entry: npx prettier --write --ignore-unknown
+        language: system
+        files: \.(md|liquid|ya?ml|json|js|ts|css|scss|html)$

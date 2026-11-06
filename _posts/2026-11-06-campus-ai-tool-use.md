@@ -19,14 +19,14 @@ toc:
 
 ## 六个工具，全是只读
 
-| 工具 | 参数 | 覆盖的问法 |
-|---|---|---|
-| `get_article_count` | 无 | 「一共多少篇」 |
-| `get_recent_articles` | `days`（默认 7） | 「最近有什么新文章」 |
-| `get_pending_articles` | 无 | 「有哪些待审核」 |
-| `search_articles_by_title` | `keyword` | 「找一下标题带 XX 的」 |
-| `get_article_by_id` | `id` | 「这封文章讲了什么」 |
-| `get_article_stats` | 无 | 「发布/草稿/删除各多少」 |
+| 工具                       | 参数             | 覆盖的问法               |
+| -------------------------- | ---------------- | ------------------------ |
+| `get_article_count`        | 无               | 「一共多少篇」           |
+| `get_recent_articles`      | `days`（默认 7） | 「最近有什么新文章」     |
+| `get_pending_articles`     | 无               | 「有哪些待审核」         |
+| `search_articles_by_title` | `keyword`        | 「找一下标题带 XX 的」   |
+| `get_article_by_id`        | `id`             | 「这封文章讲了什么」     |
+| `get_article_stats`        | 无               | 「发布/草稿/删除各多少」 |
 
 这套切法不是按数据库表切的，是按**问法**切的：多少 / 最近 / 待办 / 找 / 看详情 / 概览。六个入口覆盖后台运营人员真实的六类提问，粒度刚好——再细，模型选工具的错误率上升；再粗，一个工具塞太多分支，参数就得靠模型猜。
 
