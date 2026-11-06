@@ -1,0 +1,269 @@
+<!DOCTYPE html> <html lang="zh-cn"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> 结构化数据不该塞进向量库：校园平台的 Tool Use 助手 | zhyi </title> <meta name="author" content="zhyi "> <meta name="description" content="六个只读工具、三轮工具循环、一份只能点回去却核验不了的引用。记一次把业务数据接给本地小模型的取舍。"> <meta name="keywords" content="Java, Spring Boot, 微服务, RAG, 后端开发, zhyi"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 930px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.css" integrity="sha256-zTN0r+0OKaIv2xqeNNIYxNk0pWJ6+IqPGc1iDgVzWF0=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%F0%9F%A7%AD&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://www.10010506.xyz/blog/2026/campus-ai-tool-use/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> zhyi </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">关于 </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">简历 </a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/">项目 </a> </li> <li class="nav-item active"> <a class="nav-link" href="/blog/">笔记 </a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">论文 </a> </li> <li class="nav-item "> <a class="nav-link" href="/repositories/">仓库 </a> </li> <li class="nav-item "> <a class="nav-link" href="/teaching/">课程 </a> </li> <li class="nav-item "> <a class="nav-link" href="/people/">成员 </a> </li> <li class="nav-item dropdown "> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-nav-dropdown-toggle="true" aria-haspopup="true" aria-expanded="false">更多 </a> <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"> <a class="dropdown-item " href="/books/">书架</a> <div class="dropdown-divider"></div> <a class="dropdown-item " href="/blog/">笔记</a> </div> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="row"> <div class="col-sm-3"> <nav id="toc-sidebar" class="sticky-top toc toc-sidebar" aria-label="Table of contents" data-toc-collapse="expanded" data-toc-collapse-depth=""></nav> </div> <div class="col-sm-9"> <div class="post"> <header class="post-header"> <h1 class="post-title">结构化数据不该塞进向量库：校园平台的 Tool Use 助手</h1> <p class="post-meta"> Created on November 06, 2026 </p> <p class="post-tags"> <a href="/blog/2026"> <i class="fa-solid fa-calendar fa-sm"></i> 2026 </a>   ·   <a href="/blog/tag/ai"> <i class="fa-solid fa-hashtag fa-sm"></i> AI</a>   <a href="/blog/tag/tooluse"> <i class="fa-solid fa-hashtag fa-sm"></i> ToolUse</a>   <a href="/blog/tag/%E5%90%8E%E7%AB%AF"> <i class="fa-solid fa-hashtag fa-sm"></i> 后端</a>   ·   <a href="/blog/category/%E5%90%8E%E7%AB%AF"> <i class="fa-solid fa-tag fa-sm"></i> 后端</a> </p> </header> <article class="post-content"> <div id="markdown-content"> <p>「系统里现在有多少篇文章？」</p> <p>这个问题塞给 RAG 是答不对的。向量库能召回「和文章统计有关的段落」，但答案是 <code class="language-plaintext highlighter-rouge">count(*)</code>，不是任何一段文字。只要问题的答案在数据库里、是<strong>可通过查询确定</strong>的，就不该走检索——检索给你的是相似，SQL 给你的是准确。</p> <p>智慧校园平台的 AI 助手走的是另一条路：不做向量库，直接给模型六个函数，让它自己查。</p> <h2 id="六个工具全是只读">六个工具，全是只读</h2> <table> <thead> <tr> <th>工具</th> <th>参数</th> <th>覆盖的问法</th> </tr> </thead> <tbody> <tr> <td><code class="language-plaintext highlighter-rouge">get_article_count</code></td> <td>无</td> <td>「一共多少篇」</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">get_recent_articles</code></td> <td> <code class="language-plaintext highlighter-rouge">days</code>（默认 7）</td> <td>「最近有什么新文章」</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">get_pending_articles</code></td> <td>无</td> <td>「有哪些待审核」</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">search_articles_by_title</code></td> <td><code class="language-plaintext highlighter-rouge">keyword</code></td> <td>「找一下标题带 XX 的」</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">get_article_by_id</code></td> <td><code class="language-plaintext highlighter-rouge">id</code></td> <td>「这封文章讲了什么」</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">get_article_stats</code></td> <td>无</td> <td>「发布/草稿/删除各多少」</td> </tr> </tbody> </table> <p>这套切法不是按数据库表切的，是按<strong>问法</strong>切的：多少 / 最近 / 待办 / 找 / 看详情 / 概览。六个入口覆盖后台运营人员真实的六类提问，粒度刚好——再细，模型选工具的错误率上升；再粗，一个工具塞太多分支，参数就得靠模型猜。</p> <p><strong>全部只读，是设计选择不是能力不足。</strong> 一个能调 <code class="language-plaintext highlighter-rouge">delete_article</code> 的模型，迟早会在你说「把这篇删了」的时候删错一篇。删一篇的代价远高于答错十次：答错可以重问，删错要去数据库里捞。所以 system prompt 里写死两条：</p> <blockquote> <ul> <li>只能使用<strong>只读</strong>工具，不能执行新增、修改、删除、发布等写操作</li> <li>当用户请求写操作时，明确拒绝并说明当前助手只支持只读查询</li> </ul> </blockquote> <p>写操作该由人来点按钮。模型最多帮你把参数填好，<strong>但不能替你按下确认</strong>。</p> <h2 id="工具循环是手写的只有三轮">工具循环是手写的，只有三轮</h2> <p>没有用框架，就是一个 for 循环：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="no">MAX_TOOL_ROUNDS</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>          <span class="c1">// MAX_TOOL_ROUNDS = 3</span>
+    <span class="nc">OllamaChatResult</span> <span class="n">r</span> <span class="o">=</span> <span class="n">ollamaClient</span><span class="o">.</span><span class="na">chat</span><span class="o">(</span><span class="n">workingMessages</span><span class="o">,</span> <span class="n">toolDispatcher</span><span class="o">.</span><span class="na">getToolSchema</span><span class="o">());</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">r</span><span class="o">.</span><span class="na">getToolCalls</span><span class="o">()</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">r</span><span class="o">.</span><span class="na">getToolCalls</span><span class="o">().</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">finish</span><span class="o">(</span><span class="n">r</span><span class="o">.</span><span class="na">getContent</span><span class="o">());</span>               <span class="c1">// 没有工具调用 = 收工</span>
+    <span class="o">}</span>
+    <span class="c1">// 1. 把带 tool_calls 的 assistant 消息压回上下文</span>
+    <span class="c1">// 2. 逐个执行，每个结果作为 role=tool 的消息压回上下文</span>
+    <span class="c1">// 3. 继续下一轮</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>三个设计点：</p> <p><strong>上限三轮。</strong> 不是怕死循环，是怕<strong>死循环还烧钱</strong>。本地 Ollama 不要钱，但如果是按 token 计费的模型，一个反复调同一个工具的循环能在几分钟里烧掉一天预算。三轮足够覆盖「先搜标题、再按 id 看详情」这种两步操作，再多就说明提示词或工具描述有问题了。</p> <p><strong>工具失败不抛异常，当作上下文回填。</strong> 执行器把所有异常都吞成 <code class="language-plaintext highlighter-rouge">success=false</code> + 错误信息，然后照常塞进 <code class="language-plaintext highlighter-rouge">role=tool</code> 消息：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="o">{</span>
+    <span class="n">toolResult</span> <span class="o">=</span> <span class="n">toolDispatcher</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">toolCall</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="n">toolCall</span><span class="o">.</span><span class="na">getArguments</span><span class="o">());</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">toolResult</span><span class="o">.</span><span class="na">setSuccess</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+    <span class="n">toolResult</span><span class="o">.</span><span class="na">setSummary</span><span class="o">(</span><span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></div></div> <p>这样模型能看见「这个 id 不存在」，然后自己换一种方式再查，或者老实说没找到。抛 500 只会让用户看到一个白屏。</p> <p><strong>模型空回复时用工具摘要兜底。</strong> 小模型（llama3 这个量级）有时候调完工具就沉默了。<code class="language-plaintext highlighter-rouge">fallbackAssistantContent</code> 的处理是：模型没说话，就拿最后一条工具结果的 summary 顶上去——那条 summary 本来就是给人看的 Markdown。</p> <h2 id="引用溯源能做到哪一步">引用溯源：能做到哪一步</h2> <p>这是这个模块最值得说、也最容易被说大的部分。</p> <p>工具执行完会把命中的对象塞进 <code class="language-plaintext highlighter-rouge">ReferenceItem(type, id, title)</code>，服务层按 <code class="language-plaintext highlighter-rouge">type:id</code> 去重合并，随响应一起返回：</p> <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">LinkedHashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">ReferenceItem</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedHashMap</span><span class="o">&lt;&gt;();</span>
+<span class="n">toolResults</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="na">getReferences</span><span class="o">().</span><span class="na">stream</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">ref</span> <span class="o">-&gt;</span> <span class="n">map</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">ref</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span> <span class="o">+</span> <span class="s">":"</span> <span class="o">+</span> <span class="n">ref</span><span class="o">.</span><span class="na">getId</span><span class="o">(),</span> <span class="n">ref</span><span class="o">));</span>
+</code></pre></div></div> <p>前端拿到的是一个可点回原文的列表。用户问「最近的文章」，回答下面挂着那几篇文章的标题，点一下跳过去。</p> <p><strong>但要说清楚它是什么：引用是指针，不是证据。</strong></p> <p><code class="language-plaintext highlighter-rouge">ReferenceItem</code> 只有 <code class="language-plaintext highlighter-rouge">type / id / title</code> 三个字段，没有片段，没有位置，没有引用编号。模型在正文里也不会写 <code class="language-plaintext highlighter-rouge">[1]</code> <code class="language-plaintext highlighter-rouge">[2]</code>。所以「回答强制带引用」严格来说等于「响应必带引用列表」——它保证用户能一键回到数据源，但<strong>不保证正文里每一句都能对上某一条引用</strong>。</p> <p>更要命的是，聚合类工具（<code class="language-plaintext highlighter-rouge">get_article_count</code>、<code class="language-plaintext highlighter-rouge">get_article_stats</code>）返回的引用是空列表——因为「一共 128 篇」这句话没有可指向的对象。这是引用机制的天然边界：<strong>指得回去的才叫引用，指不回去的只能靠回答本身说得像人话。</strong></p> <p>真要走到「每句话可核验」，得两步：让模型输出带角标，服务端解析角标并校验角标编号落在 references 范围内；校验不过就把答案打回重答。这一步没做，是这套实现目前的短板，也是下一步的入口。</p> <h2 id="上下文十二条消息加一份页面上下文">上下文：十二条消息，加一份页面上下文</h2> <p>会话存在 <code class="language-plaintext highlighter-rouge">ConcurrentHashMap&lt;String, List&lt;AiConversationMessage&gt;&gt;</code> 里，滑动窗口 12 条，超了从头砍。</p> <p>够用，也够粗糙。三个已知问题：</p> <ol> <li> <strong>重启即失忆。</strong> 内存存消息，进程一挂会话全丢。真要上生产得换 Redis，但那样就得处理序列化和过期。</li> <li> <strong>砍的是最早的消息，不是最没用的消息。</strong> 用户第一轮说的「我在管文章后台」这种设定，第 13 轮就被砍掉了。</li> <li> <strong>没有摘要。</strong> 12 轮之后模型对前面发生的事一无所知，用户得重新说一遍。</li> </ol> <p>补救的办法是 <code class="language-plaintext highlighter-rouge">pageContext</code>：每次请求带上当前页面信息，序列化进 system prompt。用户在文章详情页问「这篇文章呢」，模型知道「这篇」指谁——<strong>这个指代不是靠记忆解决的，是靠每次重新告诉它。</strong></p> <p>对后台助手来说这个取舍是对的：用户在同一页面上连续问的问题高度相关，页面上下文比历史消息更能锚定「现在在说哪个对象」。</p> <h2 id="三个坑">三个坑</h2> <p><strong>文档和实现漂移。</strong> README 的工具表写 <code class="language-plaintext highlighter-rouge">get_recent_articles</code> 参数是 <code class="language-plaintext highlighter-rouge">limit</code>，代码里是 <code class="language-plaintext highlighter-rouge">days</code>；<code class="language-plaintext highlighter-rouge">get_pending_articles</code> 文档写支持 <code class="language-plaintext highlighter-rouge">limit</code>，实现里硬编码了 100。小项目里这种漂移很常见，但工具描述是<strong>直接喂给模型</strong>的——描述错了，模型就按错的方式调用，然后你会在日志里看到一堆参数解析异常。</p> <p><strong>小模型乱调工具。</strong> llama3 这个量级在「用户闲聊时也硬要调一个工具」这件事上很固执。缓解办法是工具描述写得足够具体（「按标题关键词搜索，不要用于全文检索」），以及接受一定比例的误调用——它不是 bug，是当前模型能力的价格。</p> <p><strong>没有任何评估。</strong> 这套东西到现在不知道准确率是多少。没有评估集，就没有「改了提示词之后变好了还是变坏了」的判断依据，只有「我感觉好像强了点」。这是最该补的一块。</p> <h2 id="什么时候该用哪条路">什么时候该用哪条路</h2> <p>一句话的分界：</p> <ul> <li>答案在<strong>文档</strong>里、需要语义匹配 → 检索（RAG）</li> <li>答案在<strong>数据库</strong>里、可以用查询确定 → 工具调用（Tool Use）</li> <li>两者都有 → 让模型自己选：知识库检索和业务工具都注册成工具，ReAct 循环里它自己决定查哪个</li> </ul> <p>这套校园平台属于第二种，所以它一个向量库都没有。不是因为向量库不好，是因为<strong>这里的问题不需要相似，需要准确</strong>。</p> </div> </article> </div> </div> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 zhyi . Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. </div> </footer> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script defer src="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.min.js" integrity="sha256-lo/r+jQ81wWrxdIiiiEEd538z4+dTJTt+leOuAS7GCw=" crossorigin="anonymous"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/al_search/js/search/ninja-keys.min.js"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/al_search/js/search-setup.js"></script> <script>
+// get the ninja-keys element
+const ninja = document.querySelector('ninja-keys');
+
+// add the home and posts menu items
+ninja.data = [{
+    id: "nav-关于",
+    title: "关于",
+    section: "Navigation",
+    handler: () => {
+      window.location.href = "/";
+    },
+  },{id: "nav-简历",
+          title: "简历",
+          description: "教育背景、实习经历与技术栈。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/cv/";
+          },
+        },{id: "nav-项目",
+          title: "项目",
+          description: "做过的项目，以及一些设计上的取舍。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/projects/";
+          },
+        },{id: "nav-笔记",
+          title: "笔记",
+          description: "",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/blog/";
+          },
+        },{id: "nav-论文",
+          title: "论文",
+          description: "暂时没有正式论文，条目会在有的那天出现在这里。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/publications/";
+          },
+        },{id: "nav-仓库",
+          title: "仓库",
+          description: "想看的代码都在 GitHub 上，这一页暂时留空。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/repositories/";
+          },
+        },{id: "nav-课程",
+          title: "课程",
+          description: "暂时没有开课记录，这一页先留着。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/teaching/";
+          },
+        },{id: "nav-成员",
+          title: "成员",
+          description: "一个人的站点，暂时没有成员名单。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/people/";
+          },
+        },{id: "dropdown-书架",
+              title: "书架",
+              description: "",
+              section: "Dropdown",
+              handler: () => {
+                window.location.href = "/books/";
+              },
+            },{id: "dropdown-笔记",
+              title: "笔记",
+              description: "",
+              section: "Dropdown",
+              handler: () => {
+                window.location.href = "/blog/";
+              },
+            },{id: "post-结构化数据不该塞进向量库-校园平台的-tool-use-助手",
+        
+          title: "结构化数据不该塞进向量库：校园平台的 Tool Use 助手",
+        
+        description: "六个只读工具、三轮工具循环、一份只能点回去却核验不了的引用。记一次把业务数据接给本地小模型的取舍。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/campus-ai-tool-use/";
+          
+        },
+      },{id: "post-把-rag-做成平台-一条-json-流水线和七个模块",
+        
+          title: "把 RAG 做成平台：一条 JSON 流水线和七个模块",
+        
+        description: "拆 Ragent 的工程结构——入库是可编排的节点链，召回是四路并行，模型供应商的差异被关进一个模块里。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/ragent-ingestion-platform/";
+          
+        },
+      },{id: "post-单测全绿-功能全废-一次-集成测试反攻-的复盘",
+        
+          title: "单测全绿，功能全废：一次「集成测试反攻」的复盘",
+        
+        description: "两天 35 个提交、占整个仓库 31%，全在修同一类 bug：SQL 里的表名列名拼错。它们能编译、能启动、单测全绿，却在真实数据库前全线崩溃。这篇复盘缺陷类型学，以及为什么「mock 掉被测对象」是最危险的一种测试。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/testcontainers-postmortem/";
+          
+        },
+      },{id: "post-两个我最终没用的技术-seata-与-es-官方客户端",
+        
+          title: "两个我最终没用的技术：Seata 与 ES 官方客户端",
+        
+        description: "技术选型里最难的不是「选什么」，是「敢不选什么」。这篇讲三个被我主动砍掉的方案：Seata、Elasticsearch 官方客户端、Redis 预扣库存，以及每个「减法」换来了什么、又付出了什么。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/three-tech-decisions-i-skipped/";
+          
+        },
+      },{id: "post-rag-双路召回与-rrf-融合-为什么是-1-60-rank",
+        
+          title: "RAG 双路召回与 RRF 融合：为什么是 1/(60+rank)",
+        
+        description: "向量检索和关键词检索各缺一半，融合时又不能用加权求和。记一次把 ES + pgvector 拼成一条召回链路的取舍。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/rag-hybrid-recall-rrf/";
+          
+        },
+      },{id: "post-outbox-消费侧幂等-把-落库成功-消息丢失-堵在源头",
+        
+          title: "Outbox + 消费侧幂等：把「落库成功、消息丢失」堵在源头",
+        
+        description: "事务提交了但消息没发出去，下游永远等不到。用本地消息表加消费侧幂等状态机解决，顺便把 RocketMQ 包了一层。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/outbox-idempotent-consumer/";
+          
+        },
+      },{id: "post-为什么订单用状态机-cas-而不是悲观锁",
+        
+          title: "为什么订单用状态机 CAS 而不是悲观锁",
+        
+        description: "下单链路里防重复下单、防重复扣款、防超卖，我最后选的是状态机 CAS + 乐观锁，不是 SELECT ... FOR UPDATE。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/order-state-machine-cas/";
+          
+        },
+      },{id: "news-开始做-ai-智慧校园平台-的-ai-助手模块-后来拿到传智杯-web-开发大赛全国二等奖",
+          title: '开始做「AI 智慧校园平台」的 AI 助手模块，后来拿到传智杯 Web 开发大赛全国二等奖。',
+          description: "",
+          section: "News",},{id: "news-开始在智云数科做后端开发实习-参与一个-14-微服务-7-公共库的后端项目",
+          title: '开始在智云数科做后端开发实习，参与一个 14 微服务 + 7 公共库的后端项目。',
+          description: "",
+          section: "News",},{id: "news-个人主页上线-把简历-项目和写过的东西放在一起",
+          title: '个人主页上线，把简历、项目和写过的东西放在一起。',
+          description: "",
+          section: "News",},{id: "projects-ai-智慧校园平台",
+          title: 'AI 智慧校园平台',
+          description: "基于 Tool Use 的 AI 助手，6 个只读业务工具，回答强制带引用溯源。",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/ai-campus/";
+            },},{id: "projects-企业级-rag-平台",
+          title: '企业级 RAG 平台',
+          description: "可配置节点的 IngestionEngine + 四通道召回 + RRF 融合与重排，7 个 Maven 模块的模块化单体。",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/rag-platform/";
+            },},{id: "projects-本站",
+          title: '本站',
+          description: "al-folio + GitHub Pages。简历、项目与写作放在同一个仓库里。",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/this-site/";
+            },},{id: "projects-交易中台后端",
+          title: '交易中台后端',
+          description: "把「下单 → 占库存 → 扣款 → 回调」做成不会超卖、不会重复扣款、状态可复盘的系统。14 个 Spring Boot 微服务 + 7 个公共库。",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/trade-platform/";
+            },},{
+        id: 'social-email',
+        title: 'email',
+        section: 'Socials',
+        handler: () => {
+          window.open("mailto:%7A%68%79%69%73%70%61%63%65@%71%71.%63%6F%6D", "_blank");
+        },
+      },{
+        id: 'social-github',
+        title: 'GitHub',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/zhyidev", "_blank");
+        },
+      },{
+        id: 'social-rss',
+        title: 'RSS Feed',
+        section: 'Socials',
+        handler: () => {
+          window.open("/feed.xml", "_blank");
+        },
+      },{
+        id: 'social-custom_social',
+        title: 'Custom_social',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/zhyidev/zhyidev.github.io/discussions", "_blank");
+        },
+      },{
+      id: 'light-theme',
+      title: 'Change theme to light',
+      description: 'Change the theme of the site to Light',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("light");
+      },
+    },
+    {
+      id: 'dark-theme',
+      title: 'Change theme to dark',
+      description: 'Change the theme of the site to Dark',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("dark");
+      },
+    },
+    {
+      id: 'system-theme',
+      title: 'Use system default theme',
+      description: 'Change the theme of the site to System Default',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("system");
+      },
+    },];
+
+</script> <script src="/assets/al_search/js/shortcut-key.js"></script> </body> </html>

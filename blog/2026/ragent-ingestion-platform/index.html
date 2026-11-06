@@ -1,0 +1,260 @@
+<!DOCTYPE html> <html lang="zh-cn"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> 把 RAG 做成平台：一条 JSON 流水线和七个模块 | zhyi </title> <meta name="author" content="zhyi "> <meta name="description" content="拆 Ragent 的工程结构——入库是可编排的节点链，召回是四路并行，模型供应商的差异被关进一个模块里。"> <meta name="keywords" content="Java, Spring Boot, 微服务, RAG, 后端开发, zhyi"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 930px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.css" integrity="sha256-zTN0r+0OKaIv2xqeNNIYxNk0pWJ6+IqPGc1iDgVzWF0=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%F0%9F%A7%AD&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://www.10010506.xyz/blog/2026/ragent-ingestion-platform/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> zhyi </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">关于 </a> </li> <li class="nav-item "> <a class="nav-link" href="/cv/">简历 </a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/">项目 </a> </li> <li class="nav-item active"> <a class="nav-link" href="/blog/">笔记 </a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">论文 </a> </li> <li class="nav-item "> <a class="nav-link" href="/repositories/">仓库 </a> </li> <li class="nav-item "> <a class="nav-link" href="/teaching/">课程 </a> </li> <li class="nav-item "> <a class="nav-link" href="/people/">成员 </a> </li> <li class="nav-item dropdown "> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-nav-dropdown-toggle="true" aria-haspopup="true" aria-expanded="false">更多 </a> <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"> <a class="dropdown-item " href="/books/">书架</a> <div class="dropdown-divider"></div> <a class="dropdown-item " href="/blog/">笔记</a> </div> </li> <li class="nav-item"> <button id="search-toggle" type="button" title="Search" aria-label="Open search"> <span class="nav-link">ctrl k <i class="fa-solid fa-magnifying-glass"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="row"> <div class="col-sm-3"> <nav id="toc-sidebar" class="sticky-top toc toc-sidebar" aria-label="Table of contents" data-toc-collapse="expanded" data-toc-collapse-depth=""></nav> </div> <div class="col-sm-9"> <div class="post"> <header class="post-header"> <h1 class="post-title">把 RAG 做成平台：一条 JSON 流水线和七个模块</h1> <p class="post-meta"> Created on November 06, 2026 </p> <p class="post-tags"> <a href="/blog/2026"> <i class="fa-solid fa-calendar fa-sm"></i> 2026 </a>   ·   <a href="/blog/tag/rag"> <i class="fa-solid fa-hashtag fa-sm"></i> RAG</a>   <a href="/blog/tag/%E6%9E%B6%E6%9E%84"> <i class="fa-solid fa-hashtag fa-sm"></i> 架构</a>   <a href="/blog/tag/%E5%90%8E%E7%AB%AF"> <i class="fa-solid fa-hashtag fa-sm"></i> 后端</a>   ·   <a href="/blog/category/%E5%90%8E%E7%AB%AF"> <i class="fa-solid fa-tag fa-sm"></i> 后端</a> </p> </header> <article class="post-content"> <div id="markdown-content"> <p>RAG 的 demo 和平台，分界线不在模型。</p> <p>demo 只需要回答「能不能答出来」。平台要回答的是另一个问题：<strong>答错了，是入库那一步切坏了，还是召回没捞到，还是模型自己编的？</strong> 这个问题不解决，迭代就只能靠换模型碰运气。</p> <p>拿 Ragent 当样本拆一遍。它做了三件事，各自解决一个不同层面的问题：七个 Maven 模块解决依赖方向，一条 JSON 描述的入库流水线解决可定位，四路并行召回解决覆盖率。</p> <h2 id="七个模块但不是微服务">七个模块，但不是微服务</h2> <table> <thead> <tr> <th>模块</th> <th>职责</th> <th>关键约束</th> </tr> </thead> <tbody> <tr> <td><code class="language-plaintext highlighter-rouge">framework</code></td> <td>统一响应与异常、幂等、分布式 ID、MQ 适配、SSE、跨节点流式取消</td> <td>不认识任何业务</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">infra-ai</code></td> <td>Chat / Embedding / Rerank / VLM 客户端，模型档位、路由、首包探测、健康状态、熔断降级</td> <td>不认识 rag 和 agent</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">system</code></td> <td>用户认证、审计日志</td> <td>位于各业务引擎之下</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">rag</code></td> <td>问答、知识库、入库 Pipeline、意图树、检索、会话、管理端 API</td> <td>依赖上面三个</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">agent</code></td> <td>AgentScope ReAct 执行引擎，接知识检索与 MCP 工具，支持技能、记忆、人工确认</td> <td>唯一装配 MCP 客户端的地方</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">bootstrap</code></td> <td>启动装配</td> <td>只有启动类和主配置</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">mcp-server</code></td> <td>独立的 MCP 工具示例服务（天气、票务、销售、联网搜索）</td> <td>独立进程</td> </tr> </tbody> </table> <p>分层本身不稀奇，值钱的是<strong>依赖方向单向</strong>：<code class="language-plaintext highlighter-rouge">bootstrap</code> → <code class="language-plaintext highlighter-rouge">rag</code>/<code class="language-plaintext highlighter-rouge">agent</code> → <code class="language-plaintext highlighter-rouge">system</code>/<code class="language-plaintext highlighter-rouge">infra-ai</code> → <code class="language-plaintext highlighter-rouge">framework</code>。换个向量库、换家模型供应商，改的是最底层的实现类和配置，<code class="language-plaintext highlighter-rouge">rag</code> 里的问答主流程一行不动。</p> <p>那为什么不拆成微服务？因为一次提问要穿过 <code class="language-plaintext highlighter-rouge">rag</code> 的检索、<code class="language-plaintext highlighter-rouge">agent</code> 的工具调用、<code class="language-plaintext highlighter-rouge">infra-ai</code> 的模型路由。拆开就是三次跨进程调用加三份链路追踪，而这三部分的<strong>变更频率是一样的</strong>——它们本来就是一起改的。模块边界该切在变更频率不同的地方，不是切在名词不同的地方。</p> <p>这也是模块化单体的正确用法：先在编译期把边界钉死（模块之间不能随便 import），等某一块真的需要独立扩容了，再拿出去。</p> <h2 id="入库流水线是数据不是代码">入库：流水线是数据，不是代码</h2> <p>这是整个项目里最值得抄的部分。</p> <p>大多数 RAG 项目的入库是一段写死的 <code class="language-plaintext highlighter-rouge">main</code>：读文件、切分、调 embedding、写库。加一个「先让 LLM 修一下 PDF 排版」的需求，就得改代码、重新发版。</p> <p>Ragent 把入库做成了一条由 JSON 描述的节点链：</p> <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pdf-ingestion-pipeline"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nl">"nodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fetcher-1"</span><span class="p">,</span><span class="w">  </span><span class="nl">"nodeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fetcher"</span><span class="p">,</span><span class="w">  </span><span class="nl">"nextNodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"parser-1"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nl">"nodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"parser-1"</span><span class="p">,</span><span class="w">   </span><span class="nl">"nodeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"parser"</span><span class="p">,</span><span class="w">   </span><span class="nl">"settings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"mimeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PDF"</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nl">"nextNodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enhancer-1"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nl">"nodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enhancer-1"</span><span class="p">,</span><span class="w"> </span><span class="nl">"nodeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enhancer"</span><span class="p">,</span><span class="w"> </span><span class="nl">"settings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"qwen-plus"</span><span class="p">,</span><span class="w"> </span><span class="nl">"tasks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nl">"nextNodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chunker-1"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nl">"nodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chunker-1"</span><span class="p">,</span><span class="w">  </span><span class="nl">"nodeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chunker"</span><span class="p">,</span><span class="w">  </span><span class="nl">"settings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"strategy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fixed_size"</span><span class="p">,</span><span class="w"> </span><span class="nl">"chunkSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w"> </span><span class="nl">"overlapSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">128</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nl">"nextNodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"indexer-1"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nl">"nodeId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"indexer-1"</span><span class="p">,</span><span class="w">  </span><span class="nl">"nodeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"indexer"</span><span class="p">,</span><span class="w">  </span><span class="nl">"settings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"embeddingModel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"qwen-emb-8b"</span><span class="p">,</span><span class="w"> </span><span class="nl">"includeEnhancedContent"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nl">"metadataFields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"category"</span><span class="p">,</span><span class="w"> </span><span class="s2">"department"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div> <p>三段式：<code class="language-plaintext highlighter-rouge">nodeId</code> 是身份，<code class="language-plaintext highlighter-rouge">nodeType</code> 指向注册表里的一个实现，<code class="language-plaintext highlighter-rouge">settings</code> 是类型各自的配置。执行引擎只认 <code class="language-plaintext highlighter-rouge">nextNodeId</code>，不认具体类型——所以新增一个节点，是「实现 <code class="language-plaintext highlighter-rouge">IngestionNode</code> 接口 + 注册成 Spring Bean + 在 JSON 里写一行」，不是改引擎。</p> <p>好处直接体现在排障上：一条文档处理失败，日志能告诉你死在第几个节点、那个节点的入参是什么。写死的脚本只能给你一个异常栈。</p> <h2 id="enhancer-那个节点的提示词值得单独看">enhancer 那个节点的提示词，值得单独看</h2> <p><code class="language-plaintext highlighter-rouge">enhancer</code> 用 LLM 修 PDF 解析出来的烂排版——断行、页眉页脚、表格被打散。它在 prompt 里把边界钉得很死：</p> <blockquote> <p><strong>最高原则：任何内容不得被改写、删减、补充、纠错、润色、同义替换或重排语义。只能修复格式，不得改变信息本身。</strong></p> <ul> <li>所有汉字/标点/数字/英文/单位/日期/专有名词必须与原文完全一致（逐字符一致）。</li> <li>若遇到无法确定的结构问题，宁可保留原样也不要猜。</li> </ul> </blockquote> <p>这是把 LLM 放进 ETL 的正确姿势：<strong>它只被允许做「不确定但可验证」的那部分工作，且被明确禁止做任何需要判断的事。</strong></p> <p>同样一条原则反过来说：凡是要它「顺手改一下错别字」的，都会污染召回——原文写错了，用户搜的就是错的那个词，你把它改成对的，反而搜不到了。</p> <h2 id="四路召回每加一路都在加成本">四路召回：每加一路都在加成本</h2> <p>向量、关键词（BM25）、知识图谱、联网搜索，四路并行，然后去重、RRF 融合、Rerank。</p> <p>每一路补的是另一路的洞：</p> <table> <thead> <tr> <th>通道</th> <th>补什么洞</th> <th>代价</th> </tr> </thead> <tbody> <tr> <td>向量</td> <td>同义、跨表述的语义匹配</td> <td>代码标识符、错误码、版本号这类字面量匹配差</td> </tr> <tr> <td>BM25</td> <td>精确串匹配</td> <td>不懂同义词，搜「幂等」捞不到「防重复提交」</td> </tr> <tr> <td>知识图谱</td> <td>实体之间的关系（谁属于谁、谁引用了谁）</td> <td>要预先建图，抽取质量决定天花板</td> </tr> <tr> <td>联网搜索</td> <td>知识库外的时效信息</td> <td>结果不可控，必须标注来源否则无法追责</td> </tr> </tbody> </table> <p>前两路是标配，我在<a href="/blog/2026/rag-hybrid-recall-rrf/">上一篇</a>里推导过 RRF 为什么只比名次不比分数——两路的分数不在一个量纲上（余弦 0~1，BM25 无上界），加权求和要先归一化，而归一化参数得跟着查询调，等于拍脑袋。</p> <p>四路的代价是<strong>延迟取 max</strong>，不是取和。只要有一路慢，整条召回就被拖住。所以工程上真正的工作量不在「接第四路」，而在超时预算怎么切：每一路给一个 deadline，到点就按已返回的算，融合层对缺席的通道不做惩罚。</p> <p>融合之后还有一层排序：40 条进 Rerank，出 10 条喂给模型。RRF 只解决「怎么公平地合并两份名单」，没解决「相关性到底谁高」——cross-encoder 把查询和段落一起编码，判断质量高得多，但也慢得多，所以只能用在四十条这个量级上。</p> <h2 id="模型层把供应商差异关进-infra-ai">模型层：把供应商差异关进 <code class="language-plaintext highlighter-rouge">infra-ai</code> </h2> <p><code class="language-plaintext highlighter-rouge">infra-ai</code> 里定义了 <code class="language-plaintext highlighter-rouge">ChatClient</code> / <code class="language-plaintext highlighter-rouge">EmbeddingClient</code> / <code class="language-plaintext highlighter-rouge">RerankClient</code> 三个接口，上层只认接口。换供应商，是实现类加配置的事。</p> <p>它额外做了三件在国内环境里必须做的事：</p> <ol> <li> <strong>模型档位</strong>：同一能力配多个候选，按价格/质量分档，故障时往下掉一档而不是直接失败。</li> <li> <strong>首包探测</strong>：流式接口真正的健康度不是 HTTP 200，是第一个 token 多久回来。只测连通性，等于没测。</li> <li> <strong>熔断降级</strong>：连续失败到阈值就摘掉这个候选，隔一段时间放一个探测请求试探恢复。</li> </ol> <p>这三件事如果散在业务代码里，每接一个新供应商就要重写一遍。收在一个模块里，业务侧只看到「调用了 ChatClient，成功了」。</p> <h2 id="这套结构的边界">这套结构的边界</h2> <p>模块化单体的天花板很明确：<strong>所有模块共享一个 JVM 堆</strong>。<code class="language-plaintext highlighter-rouge">rag</code> 里一次大文档的解析会把整个服务的 GC 拖下水。真到那一天，第一个该拆出去的就是入库——它是唯一「CPU 密集 + 长任务 + 可异步」的部分，拆出去代价最小、收益最大。</p> <p>四路召回也不是越多越好。知识图谱的前提是实体抽取质量，抽不准的图谱比没有图谱更糟——它会稳定地把错误答案排到前面，而且你还看不出问题出在图谱。什么时候该退回两路：<strong>当你没法评估第三路带来的增益时。</strong></p> <p>Rerank 同理，它把召回的所有误差放大成一个看起来很有把握的排序结果。没有评估集的时候加 Rerank，是在给自己制造虚假的安全感。</p> <hr> <p>这套项目最值得学的不是某个算法。是它把「一条文档怎么进来」和「一个问题怎么被回答」都做成了<strong>可观测、可回放、可局部替换</strong>的链路。RAG 做到最后，拼的不是模型，是这条链路上每一个环节你敢不敢单独换掉。</p> </div> </article> </div> </div> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 zhyi . Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. </div> </footer> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script defer src="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.min.js" integrity="sha256-lo/r+jQ81wWrxdIiiiEEd538z4+dTJTt+leOuAS7GCw=" crossorigin="anonymous"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> <script type="module" src="/assets/al_search/js/search/ninja-keys.min.js"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/al_search/js/search-setup.js"></script> <script>
+// get the ninja-keys element
+const ninja = document.querySelector('ninja-keys');
+
+// add the home and posts menu items
+ninja.data = [{
+    id: "nav-关于",
+    title: "关于",
+    section: "Navigation",
+    handler: () => {
+      window.location.href = "/";
+    },
+  },{id: "nav-简历",
+          title: "简历",
+          description: "教育背景、实习经历与技术栈。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/cv/";
+          },
+        },{id: "nav-项目",
+          title: "项目",
+          description: "做过的项目，以及一些设计上的取舍。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/projects/";
+          },
+        },{id: "nav-笔记",
+          title: "笔记",
+          description: "",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/blog/";
+          },
+        },{id: "nav-论文",
+          title: "论文",
+          description: "暂时没有正式论文，条目会在有的那天出现在这里。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/publications/";
+          },
+        },{id: "nav-仓库",
+          title: "仓库",
+          description: "想看的代码都在 GitHub 上，这一页暂时留空。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/repositories/";
+          },
+        },{id: "nav-课程",
+          title: "课程",
+          description: "暂时没有开课记录，这一页先留着。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/teaching/";
+          },
+        },{id: "nav-成员",
+          title: "成员",
+          description: "一个人的站点，暂时没有成员名单。",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/people/";
+          },
+        },{id: "dropdown-书架",
+              title: "书架",
+              description: "",
+              section: "Dropdown",
+              handler: () => {
+                window.location.href = "/books/";
+              },
+            },{id: "dropdown-笔记",
+              title: "笔记",
+              description: "",
+              section: "Dropdown",
+              handler: () => {
+                window.location.href = "/blog/";
+              },
+            },{id: "post-结构化数据不该塞进向量库-校园平台的-tool-use-助手",
+        
+          title: "结构化数据不该塞进向量库：校园平台的 Tool Use 助手",
+        
+        description: "六个只读工具、三轮工具循环、一份只能点回去却核验不了的引用。记一次把业务数据接给本地小模型的取舍。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/campus-ai-tool-use/";
+          
+        },
+      },{id: "post-把-rag-做成平台-一条-json-流水线和七个模块",
+        
+          title: "把 RAG 做成平台：一条 JSON 流水线和七个模块",
+        
+        description: "拆 Ragent 的工程结构——入库是可编排的节点链，召回是四路并行，模型供应商的差异被关进一个模块里。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/ragent-ingestion-platform/";
+          
+        },
+      },{id: "post-单测全绿-功能全废-一次-集成测试反攻-的复盘",
+        
+          title: "单测全绿，功能全废：一次「集成测试反攻」的复盘",
+        
+        description: "两天 35 个提交、占整个仓库 31%，全在修同一类 bug：SQL 里的表名列名拼错。它们能编译、能启动、单测全绿，却在真实数据库前全线崩溃。这篇复盘缺陷类型学，以及为什么「mock 掉被测对象」是最危险的一种测试。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/testcontainers-postmortem/";
+          
+        },
+      },{id: "post-两个我最终没用的技术-seata-与-es-官方客户端",
+        
+          title: "两个我最终没用的技术：Seata 与 ES 官方客户端",
+        
+        description: "技术选型里最难的不是「选什么」，是「敢不选什么」。这篇讲三个被我主动砍掉的方案：Seata、Elasticsearch 官方客户端、Redis 预扣库存，以及每个「减法」换来了什么、又付出了什么。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/three-tech-decisions-i-skipped/";
+          
+        },
+      },{id: "post-rag-双路召回与-rrf-融合-为什么是-1-60-rank",
+        
+          title: "RAG 双路召回与 RRF 融合：为什么是 1/(60+rank)",
+        
+        description: "向量检索和关键词检索各缺一半，融合时又不能用加权求和。记一次把 ES + pgvector 拼成一条召回链路的取舍。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/rag-hybrid-recall-rrf/";
+          
+        },
+      },{id: "post-outbox-消费侧幂等-把-落库成功-消息丢失-堵在源头",
+        
+          title: "Outbox + 消费侧幂等：把「落库成功、消息丢失」堵在源头",
+        
+        description: "事务提交了但消息没发出去，下游永远等不到。用本地消息表加消费侧幂等状态机解决，顺便把 RocketMQ 包了一层。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/outbox-idempotent-consumer/";
+          
+        },
+      },{id: "post-为什么订单用状态机-cas-而不是悲观锁",
+        
+          title: "为什么订单用状态机 CAS 而不是悲观锁",
+        
+        description: "下单链路里防重复下单、防重复扣款、防超卖，我最后选的是状态机 CAS + 乐观锁，不是 SELECT ... FOR UPDATE。",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/order-state-machine-cas/";
+          
+        },
+      },{id: "news-开始做-ai-智慧校园平台-的-ai-助手模块-后来拿到传智杯-web-开发大赛全国二等奖",
+          title: '开始做「AI 智慧校园平台」的 AI 助手模块，后来拿到传智杯 Web 开发大赛全国二等奖。',
+          description: "",
+          section: "News",},{id: "news-开始在智云数科做后端开发实习-参与一个-14-微服务-7-公共库的后端项目",
+          title: '开始在智云数科做后端开发实习，参与一个 14 微服务 + 7 公共库的后端项目。',
+          description: "",
+          section: "News",},{id: "news-个人主页上线-把简历-项目和写过的东西放在一起",
+          title: '个人主页上线，把简历、项目和写过的东西放在一起。',
+          description: "",
+          section: "News",},{id: "projects-ai-智慧校园平台",
+          title: 'AI 智慧校园平台',
+          description: "基于 Tool Use 的 AI 助手，6 个只读业务工具，回答强制带引用溯源。",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/ai-campus/";
+            },},{id: "projects-企业级-rag-平台",
+          title: '企业级 RAG 平台',
+          description: "可配置节点的 IngestionEngine + 四通道召回 + RRF 融合与重排，7 个 Maven 模块的模块化单体。",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/rag-platform/";
+            },},{id: "projects-本站",
+          title: '本站',
+          description: "al-folio + GitHub Pages。简历、项目与写作放在同一个仓库里。",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/this-site/";
+            },},{id: "projects-交易中台后端",
+          title: '交易中台后端',
+          description: "把「下单 → 占库存 → 扣款 → 回调」做成不会超卖、不会重复扣款、状态可复盘的系统。14 个 Spring Boot 微服务 + 7 个公共库。",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/trade-platform/";
+            },},{
+        id: 'social-email',
+        title: 'email',
+        section: 'Socials',
+        handler: () => {
+          window.open("mailto:%7A%68%79%69%73%70%61%63%65@%71%71.%63%6F%6D", "_blank");
+        },
+      },{
+        id: 'social-github',
+        title: 'GitHub',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/zhyidev", "_blank");
+        },
+      },{
+        id: 'social-rss',
+        title: 'RSS Feed',
+        section: 'Socials',
+        handler: () => {
+          window.open("/feed.xml", "_blank");
+        },
+      },{
+        id: 'social-custom_social',
+        title: 'Custom_social',
+        section: 'Socials',
+        handler: () => {
+          window.open("https://github.com/zhyidev/zhyidev.github.io/discussions", "_blank");
+        },
+      },{
+      id: 'light-theme',
+      title: 'Change theme to light',
+      description: 'Change the theme of the site to Light',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("light");
+      },
+    },
+    {
+      id: 'dark-theme',
+      title: 'Change theme to dark',
+      description: 'Change the theme of the site to Dark',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("dark");
+      },
+    },
+    {
+      id: 'system-theme',
+      title: 'Use system default theme',
+      description: 'Change the theme of the site to System Default',
+      section: 'Theme',
+      handler: () => {
+        setThemeSetting("system");
+      },
+    },];
+
+</script> <script src="/assets/al_search/js/shortcut-key.js"></script> </body> </html>
